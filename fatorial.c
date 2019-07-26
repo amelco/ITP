@@ -1,8 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-size_t fatorial(size_t num){
-    if (num == 1) {
+unsigned long long int fatorial(unsigned int num){
+    if (num == 1 || num == 0) {
         return 1;
     } else {
         return num * fatorial(num - 1);
@@ -11,9 +11,9 @@ size_t fatorial(size_t num){
 }
 
 int main(void){
-    size_t a;
+    unsigned int a;
     printf("Digite um número: ");
-    scanf("%zu", &a);
-    printf("O fatorial de %zu é %zu\n", a, fatorial(a));
+    scanf("%u", &a);
+    printf("O fatorial de %u é %llu\n", a, fatorial(a));
     return EXIT_SUCCESS;
 }
