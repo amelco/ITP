@@ -1,7 +1,4 @@
-#define _DEFAULT_SOURCE
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <curses.h>     // adds screen buffer and other functions like mvprintw
 #include <time.h>       // needed to calculate elapsedTime
 #include <math.h>       // needed to calculate fmod()
@@ -33,7 +30,7 @@ void clearScreen(){
 void update(){
     // GAME TICK (60 fps)
     usups = ((61-ups)/60.0 * 1000000);
-    usleep(usups);
+    usleep(usups); // try nanosleep() to get rid of the warning
     frames++;
     
     if (frames>2) {
