@@ -12,6 +12,8 @@ typedef struct Player {
 int screenSetup();
 int mapSetup();
 Player* playerSetup();
+int handleInput(int input, Player* user);
+int playerMove(int x, int y, Player* user);
 
 int main(){
     Player* user;           // pointer of type Player
@@ -23,6 +25,7 @@ int main(){
 
     // game loop
     while ((ch = getch()) != 'q'){ // wait for user input ans store it in ch
+        handleInput(ch, user);      // call function to handle user input
 
     }
 
@@ -79,4 +82,46 @@ Player* playerSetup(){
     move(newPlayer->yPos, newPlayer->xPos);   // move cursor back to player initial position
     
     return newPlayer;
+}
+
+int handleInput(int input, Player* user){
+    switch (input){
+        // move up
+        case 'w':
+        case 'W':
+            playerMove(user->xPos, user->yPos - 1, user);
+            break;
+        // move left
+        case 'a':
+        case 'A':
+            playerMove(user->xPos - 1, user->yPos, user);
+            break;
+        // move down
+        case 's':
+        case 'S':
+            playerMove(user->xPos, user->yPos + 1, user);
+            break;
+        // move right
+        case 'd':
+        case 'D':
+            playerMove(user->xPos + 1, user->yPos, user);
+            break;
+
+        default:
+            break;
+    }
+    return 0;
+}
+
+int playerMove(int x, int y, Player* user){
+    mvprintw(user->yPos, user->xPos, ".");      // current player location is now empty
+    
+    // update player coordinates
+    user->xPos = x;
+    user->yPos = y;
+    
+    mvprintw(user->yPos, user->xPos, "@");      // draw new player current location
+    move(y, x);
+
+    return 0;
 }
