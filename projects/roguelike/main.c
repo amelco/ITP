@@ -1,11 +1,15 @@
 #include <ncurses.h>
 #include <stdlib.h>     // needed for malloc()
 
+typedef struct Position {
+    int x;
+    int y;
+} Position;
+
 // struct that defines room atributes
 typedef struct Room {
     // top left coordinate of the room
-    int xPos;
-    int yPos;
+    Position position;
 
     // room dimensions
     int height;
@@ -20,9 +24,9 @@ typedef struct Room {
 
 // struct that defines player atributes
 typedef struct Player {
-    int xPos;
-    int yPos;
+    Position position;
     int health;
+    // Room* room;     // tells wich room the player is
 } Player;
 
 // function headers
@@ -84,8 +88,8 @@ Room* createRoom(int x, int y, int height, int width){
     newRoom = malloc(sizeof(Room));     // reserving memory space to 1 Room
     
     // initializing newRoom attributes
-    newRoom->xPos = x;
-    newRoom->yPos = y;
+    newRoom->position.x = x;
+    newRoom->position.y = y;
     newRoom->height = height;
     newRoom->width = width;
 
@@ -94,16 +98,16 @@ Room* createRoom(int x, int y, int height, int width){
 
 int drawRoom(Room* room){
     // draw north and south walls
-    for (int x=room->xPos; x<room->xPos + room->width; x++){
-        mvprintw(room->yPos, x, "-");        
-        mvprintw(room->yPos+room->height-1, x, "-");        
+    for (int x=room->position.x; x<room->position.x + room->width; x++){
+        mvprintw(room->position.y, x, "-");        
+        mvprintw(room->position.y+room->height-1, x, "-");        
     }
     
     // draw east and west walls and floor
-    for (int y=room->yPos + 1; y<room->yPos + room->height-1; y++){
-        mvprintw(y, room->xPos, "|");        
-        mvprintw(y, room->xPos+room->width-1, "|");
-        for (int x = room->xPos+1; x<room->xPos+room->width-1; x++){
+    for (int y=room->position.y + 1; y<room->position.y + room->height-1; y++){
+        mvprintw(y, room->position.x, "|");        
+        mvprintw(y, room->position.x+room->width-1, "|");
+        for (int x = room->position.x+1; x<room->position.x+room->width-1; x++){
             mvprintw(y,x,".");
         }
     }
@@ -116,11 +120,11 @@ Player* playerSetup(){
     newPlayer = malloc(sizeof(Player));     // reserve a spcae in memory to the Player variable
 
     // initialize Player attributes
-    newPlayer->xPos = 14;
-    newPlayer->yPos = 14;
+    newPlayer->position.x = 14;
+    newPlayer->position.y = 14;
     newPlayer->health = 20;
 
-    playerMove(newPlayer->yPos, newPlayer->xPos, newPlayer);   // draw player
+    playerMove(newPlayer->position.y, newPlayer->position.x, newPlayer);   // draw player
     
     return newPlayer;
 }
@@ -132,30 +136,30 @@ int handleInput(int input, Player* user){
         // move up
         case 'w':
         case 'W':
-            newX =user->xPos; 
-            newY =user->yPos - 1; 
-            // playerMove(user->xPos, user->yPos - 1, user);
+            newX =user->position.x; 
+            newY =user->position.y - 1; 
+            // playerMove(user->position.x, user->position.y - 1, user);
             break;
         // move left
         case 'a':
         case 'A':
-            newX =user->xPos - 1; 
-            newY =user->yPos; 
-            // playerMove(user->xPos - 1, user->yPos, user);
+            newX =user->position.x - 1; 
+            newY =user->position.y; 
+            // playerMove(user->position.x - 1, user->position.y, user);
             break;
         // move down
         case 's':
         case 'S':
-            newX =user->xPos; 
-            newY =user->yPos + 1; 
-            // playerMove(user->xPos, user->yPos + 1, user);
+            newX =user->position.x; 
+            newY =user->position.y + 1; 
+            // playerMove(user->position.x, user->position.y + 1, user);
             break;
         // move right
         case 'd':
         case 'D':
-            newX =user->xPos + 1; 
-            newY =user->yPos; 
-            // playerMove(user->xPos + 1, user->yPos, user);
+            newX =user->position.x + 1; 
+            newY =user->position.y; 
+            // playerMove(user->position.x + 1, user->position.y, user);
             break;
 
         default:
@@ -175,20 +179,20 @@ int checkPosition(int newX, int newY, Player* user){
             playerMove(newX, newY, user);
             break;
        default:
-            move(user->yPos, user->xPos);
+            move(user->position.y, user->position.x);
             break;
     }
     return 0;
 }
 
 int playerMove(int x, int y, Player* user){
-    mvprintw(user->yPos, user->xPos, ".");      // current player location is now empty
+    mvprintw(user->position.y, user->position.x, ".");      // current player location is now empty
     
     // update player coordinates
-    user->xPos = x;
-    user->yPos = y;
+    user->position.x = x;
+    user->position.y = y;
     
-    mvprintw(user->yPos, user->xPos, "@");      // draw new player current location
+    mvprintw(user->position.y, user->position.x, "@");      // draw new player current location
     move(y, x);                                 // move cursor back to player initial position
 
     return 0;
