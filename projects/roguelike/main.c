@@ -14,6 +14,7 @@ int mapSetup();
 Player* playerSetup();
 int handleInput(int input, Player* user);
 int playerMove(int x, int y, Player* user);
+int checkPosition(int newX, int newY, Player* user);
 
 int main(){
     Player* user;           // pointer of type Player
@@ -84,29 +85,56 @@ Player* playerSetup(){
 }
 
 int handleInput(int input, Player* user){
+    int newX = 0;
+    int newY = 0;
     switch (input){
         // move up
         case 'w':
         case 'W':
-            playerMove(user->xPos, user->yPos - 1, user);
+            newX =user->xPos; 
+            newY =user->yPos - 1; 
+            // playerMove(user->xPos, user->yPos - 1, user);
             break;
         // move left
         case 'a':
         case 'A':
-            playerMove(user->xPos - 1, user->yPos, user);
+            newX =user->xPos - 1; 
+            newY =user->yPos; 
+            // playerMove(user->xPos - 1, user->yPos, user);
             break;
         // move down
         case 's':
         case 'S':
-            playerMove(user->xPos, user->yPos + 1, user);
+            newX =user->xPos; 
+            newY =user->yPos + 1; 
+            // playerMove(user->xPos, user->yPos + 1, user);
             break;
         // move right
         case 'd':
         case 'D':
-            playerMove(user->xPos + 1, user->yPos, user);
+            newX =user->xPos + 1; 
+            newY =user->yPos; 
+            // playerMove(user->xPos + 1, user->yPos, user);
             break;
 
         default:
+            break;
+    }
+    checkPosition(newX, newY, user);
+    
+    return 0;
+}
+
+// check what is at player's next position 
+int checkPosition(int newX, int newY, Player* user){
+    int newPos;
+    switch (mvinch(newY, newX)){    // gets character of the Y and X coordinates
+        // free space (player can move)
+        case '.':
+            playerMove(newX, newY, user);
+            break;
+       default:
+            move(user->yPos, user->xPos);
             break;
     }
     return 0;
