@@ -1,6 +1,23 @@
 #include <ncurses.h>
 #include <stdlib.h>     // needed for malloc()
 
+// struct that defines room atributes
+typedef struct Room {
+    // top left coordinate of the room
+    int xPos;
+    int yPos;
+
+    // room dimensions
+    int height;
+    int width;
+    
+    // monsters inside the room
+    // Monster** monsters;    // array of pointers of type Monster
+
+    // items inside the room
+    // Items** items;    // array of pointers of type Item
+} Room;
+
 // struct that defines player atributes
 typedef struct Player {
     int xPos;
@@ -10,11 +27,15 @@ typedef struct Player {
 
 // function headers
 int screenSetup();
-int mapSetup();
+Room** mapSetup();
 Player* playerSetup();
 int handleInput(int input, Player* user);
 int playerMove(int x, int y, Player* user);
 int checkPosition(int newX, int newY, Player* user);
+
+/* room functions */
+Room* createRoom(int x, int y, int height, int width);
+int drawRoom(Room* room);
 
 int main(){
     Player* user;           // pointer of type Player
@@ -44,28 +65,48 @@ int screenSetup(){
     return 0;                   // print to screen
 }
 
-int mapSetup(){
-    mvprintw(13, 13, "--------");   // print in a x, y position of screen
-    mvprintw(14, 13, "|......|");
-    mvprintw(15, 13, "|......|");
-    mvprintw(16, 13, "|......|");
-    mvprintw(17, 13, "|......|");
-    mvprintw(18, 13, "--------");
+Room** mapSetup(){  // it returns an array of rooms
+    Room** rooms;   // array of rooms
+    rooms = malloc(sizeof(Room)*6);     // reserves space in memory to 6 type Room
 
-    mvprintw(2, 40, "--------");
-    mvprintw(3, 40, "|......|");
-    mvprintw(4, 40, "|......|");
-    mvprintw(5, 40, "|......|");
-    mvprintw(6, 40, "|......|");
-    mvprintw(7, 40, "--------");
+    rooms[0] = createRoom(13, 13, 6, 8);
+    drawRoom(rooms[0]);
+    rooms[1] = createRoom(40, 2, 6, 8);
+    drawRoom(rooms[1]);
+    rooms[2] = createRoom(40, 10, 6, 12);
+    drawRoom(rooms[2]);
 
-    mvprintw(10, 40, "------------");
-    mvprintw(11, 40, "|..........|");
-    mvprintw(12, 40, "|..........|");
-    mvprintw(13, 40, "|..........|");
-    mvprintw(14, 40, "|..........|");
-    mvprintw(15, 40, "------------");
+    return rooms;
+}
 
+Room* createRoom(int x, int y, int height, int width){
+    Room* newRoom;                      // creating newRoom pointer to Room
+    newRoom = malloc(sizeof(Room));     // reserving memory space to 1 Room
+    
+    // initializing newRoom attributes
+    newRoom->xPos = x;
+    newRoom->yPos = y;
+    newRoom->height = height;
+    newRoom->width = width;
+
+    return newRoom;
+}
+
+int drawRoom(Room* room){
+    // draw north and south walls
+    for (int x=room->xPos; x<room->xPos + room->width; x++){
+        mvprintw(room->yPos, x, "-");        
+        mvprintw(room->yPos+room->height-1, x, "-");        
+    }
+    
+    // draw east and west walls and floor
+    for (int y=room->yPos + 1; y<room->yPos + room->height-1; y++){
+        mvprintw(y, room->xPos, "|");        
+        mvprintw(y, room->xPos+room->width-1, "|");
+        for (int x = room->xPos+1; x<room->xPos+room->width-1; x++){
+            mvprintw(y,x,".");
+        }
+    }
     return 0;
 }
 
