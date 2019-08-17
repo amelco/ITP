@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>     // needed for malloc()
+#include <time.h>       // to use inside srand()
 
 typedef struct Position {
     int x;
@@ -14,6 +15,8 @@ typedef struct Room {
     // room dimensions
     int height;
     int width;
+
+    Position door[4];
     
     // monsters inside the room
     // Monster** monsters;    // array of pointers of type Monster
@@ -65,6 +68,7 @@ int screenSetup(){
     printw("Hello world");      // print to buffer
     noecho();                   // does not show characters as user types
     refresh();
+    srand(time(NULL));      // seed to call rand()
     
     return 0;                   // print to screen
 }
@@ -93,6 +97,23 @@ Room* createRoom(int x, int y, int height, int width){
     newRoom->height = height;
     newRoom->width = width;
 
+
+    // top door
+    newRoom->door[0].x = rand() % (width - 2) + newRoom->position.x + 1;
+    newRoom->door[0].y = newRoom->position.y;
+
+    // bottom door
+    newRoom->door[1].x = rand() % (width - 2) + newRoom->position.x + 1;
+    newRoom->door[1].y = newRoom->position.y + newRoom->height - 1;
+    
+    // left door
+    newRoom->door[2].x = newRoom->position.x;
+    newRoom->door[2].y = rand() % (height - 2) + newRoom->position.y + 1;
+    
+    // right door
+    newRoom->door[3].x = newRoom->position.x + newRoom->width - 1;
+    newRoom->door[3].y = rand() % (height - 2) + newRoom->position.y + 1;
+
     return newRoom;
 }
 
@@ -111,6 +132,12 @@ int drawRoom(Room* room){
             mvprintw(y,x,".");
         }
     }
+
+    // draw doors
+    for (int i=0; i<4; i++){
+        mvprintw(room->door[i].y, room->door[i].x, "#");
+    }
+
     return 0;
 }
 
