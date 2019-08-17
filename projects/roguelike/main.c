@@ -78,8 +78,7 @@ Player* playerSetup(){
     newPlayer->yPos = 14;
     newPlayer->health = 20;
 
-    mvprintw(newPlayer->yPos, newPlayer->xPos, "@");    // draw player
-    move(newPlayer->yPos, newPlayer->xPos);   // move cursor back to player initial position
+    playerMove(newPlayer->yPos, newPlayer->xPos, newPlayer);   // draw player
     
     return newPlayer;
 }
@@ -121,7 +120,7 @@ int playerMove(int x, int y, Player* user){
     user->yPos = y;
     
     mvprintw(user->yPos, user->xPos, "@");      // draw new player current location
-    move(y, x);
+    move(y, x);                                 // move cursor back to player initial position
 
     return 0;
 }
