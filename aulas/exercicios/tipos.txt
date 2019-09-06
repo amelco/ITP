@@ -1,8 +1,0 @@
-                                                tipo    valor
-1. a+1 (int a=2):                               int     3
-2. a+b+c (int a=2, int b=3, float c=1.5)        float   6.5
-3. a+b (float a=1.5, double b=3.5)              double  5.0
-4. (a+b)+c (int a=1, float b=1.5, int c=3)      float   5.5
-5. (int)(a+b)+c (int a=1, float b=1.5, int c=3) int     5
-6. a/b+c (int a=1, int b=2, float c=3)          float   3
-7. (float)a/b+c (int a=1, int b=2, float c=3)   float   3.5
