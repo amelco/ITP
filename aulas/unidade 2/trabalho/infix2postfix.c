@@ -101,8 +101,8 @@ void InfixToPostfix(char infix_exp[], char postfix_exp[])
 	char item;
 	char x;
 
-	push('(');                               /* push '(' onto stack */
-	strcat(infix_exp,")");                  /* add ')' to infix expression */
+	push('(');                               // coloca '(' na pilha
+	strcat(infix_exp,")");                   //adiciona ')' na expressão infix
 
 	i=0;
 	j=0;
@@ -157,22 +157,17 @@ void InfixToPostfix(char infix_exp[], char postfix_exp[])
 
 		item = infix_exp[i]; /* go to next symbol of infix expression */
 	} /* while loop ends here */
+	
+	// Ao fim do while loop, a pilha deve estar vazia
 	if(top>0)
 	{
-		printf("\nInvalid infix Expression.\n");        /* the it is illegeal  symbol */
-		getchar();
-		exit(1);
-	}
-	if(top>0)
-	{
-		printf("\nInvalid infix Expression.\n");        /* the it is illegeal  symbol */
+		printf("\nInvalid infix Expression.\n");
 		getchar();
 		exit(1);
 	}
 
 
-	postfix_exp[j] = '\0'; /* add sentinel else puts() fucntion */
-	/* will print entire postfix[] array upto SIZE */
+	postfix_exp[j] = '\0';		// finaliza a string da expressao postfix
 
 }
 

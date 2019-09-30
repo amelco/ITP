@@ -105,26 +105,34 @@ void InfixToPostfix(char infix_exp[], char postfix_exp[])
 		else if(eh_operador(item))              // item é um operador [+, -, *, /]
 		{
 			x=pop();                            // retira elemento da pilha e armazena em x
-            printf("x: %c, item: %c\t%d && %d\n", x, item, eh_operador(x), prioridade(x) >= prioridade(item));
-            /* verifica se é operador [1 ou 0] */
+            // printf("x: %c, item: %c\t%d && %d\n", x, item, eh_operador(x), prioridade(x) >= prioridade(item));
+            
+            /* 
+                retira todos os elementos de maior prioridade que o item e
+                os adiciona na expressao postfix
+                
+                funcionamento:
+                    verifica se x é operador [1 ou 0] E se a prioridade de x é maior que a do item
+                    ex.
+                    x='+'     => prioridade(x) = 1   => é operador? [verdadeiro = 1]
+                    item='*'  => prioridade(item) = 2
+                    1 >= 2? [falso = 0]
+                    1 && 0 [1 AND 0] = 0 [falso]
+             */
 			while(eh_operador(x) && prioridade(x)>= prioridade(item))
 			{
-                printf("TRUE\n");
-				postfix_exp[j] = x;                  /* so pop all higher precendence operator and */
+				postfix_exp[j] = x;
 				j++;
-				x = pop();                       /* add them to postfix expresion */
+				x = pop();
 			}
-			push(x);
-			/* because just above while loop will terminate we have
-			oppped one extra item
-			for which condition fails and loop terminates, so that one*/
-
-			push(item);                 /* push current oprerator symbol onto stack */
+			push(x);            // coloca de volta o item que foi retirado ao fim do loop
+			push(item);         // coloca o item atual na pilha
 		}
-        else if(item == ')')         /* if current symbol is ')' then */
+        // se o item é ')' então retira os elementos da pilha e escreve no postfix até encontrar um '('
+        else if(item == ')')
 		{
-			x = pop();                   /* pop and keep popping until */
-			while(x != '(')                /* '(' encounterd */
+			x = pop();
+			while(x != '(')
 			{
 				postfix_exp[j] = x;
 				j++;
@@ -132,54 +140,92 @@ void InfixToPostfix(char infix_exp[], char postfix_exp[])
 			}
 		}
 		else
-		{ /* if current symbol is neither operand not '(' nor ')' and nor
-			operator */
-			printf("\nExpressão infix inválida.\n");        /* the it is illegeal  symbol */
+        // se o item não é '(' ou ')' e nem um operador, então é um símbolo não permitido
+		{
+			printf("\nExpressão infix inválida.\n");
 			getchar();
 			exit(1);
 		}
+
 		i++;
+		item = infix_exp[i];        // armazena o próximo símbolo da expressão infix
+	}                               // fim do while
 
-
-		item = infix_exp[i]; /* go to next symbol of infix expression */
-	} /* while loop ends here */
+    // Ao fim do while loop, a pilha deve estar vazia
 	if(topo > 0)
 	{
-		printf("\nExpressão infix inválida.\n");        /* the it is illegeal  symbol */
-		getchar();
-		exit(1);
-	}
-	if(topo > 0)
-	{
-		printf("\nExpressão infix inválida.\n");        /* the it is illegeal  symbol */
+		printf("\nExpressão infix inválida.\n");
 		getchar();
 		exit(1);
 	}
 
 
-	postfix_exp[j] = '\0'; /* add sentinel else puts() fucntion */
-	/* will print entire postfix[] array upto SIZE */
+	postfix_exp[j] = '\0';          // finaliza a string da expressao postfix
+
+}
+
+int calc(char x,int op1,int op2)
+{
+	if(x == '+')
+		return(op1+op2);
+	if(x == '-')
+		return(op1-op2);
+	if(x == '*')
+		return(op1*op2);
+	if(x == '/')
+		return(op1/op2);
+	if(x == '%')
+		return(op1%op2);
+}
+
+int resolve(char postfix[]) {
+    int i;
+    char item;
+    int op1, op2, val;
+
+    topo = -1;
+    i = 0;
+    item = postfix[i];
+    
+    while (item != '\0'){
+        // printf("%d %c\n", i, item);
+        if (isdigit(item))
+            push(item);
+        else {
+            op1 = pop()-48;         // item-48 para retornar o número inteiro ao inves do codigo ASCII
+            op2 = pop()-48;
+            val = calc(item, op1, op2);
+            push(val+48);
+        }
+
+        i++;
+        item = postfix[i];
+    }
+    
+    // val = pop()-48;
+    printf("Resultado: %d\n", val);
 
 }
 
 int main() {
-    char infix[TAM], postfix[TAM];         /* declare infix string and postfix string */
+     int n = 4;  // número de equações
+    // cria vetor de strings que pode armazenar até 30 equações com 100 caracteres
+    char equacoes[30][100] = {"1+2*3",
+                         "1-2*3/4", 
+                         "1+1/2", 
+                         "2/3+3*4"};
+    // strings para serem usadas na função InfixToPostfix()
+    char infix[TAM], postfix[TAM];
 
-	/* why we asked the user to enter infix expression
-	* in parentheses ( )
-	* What changes are required in porgram to
-	* get rid of this restriction since it is not
-	* in algorithm
-	* */
-	printf("ASSUMPTION: The infix expression contains single letter variables and single digit constants only.\n");
-	printf("\nEnter Infix expression : ");
-	// gets(infix);
-    scanf("%s", infix);
-
-	InfixToPostfix(infix,postfix);                   /* call to convert */
-	printf("Postfix Expression: %s\n", postfix);
-	// puts(postfix);                     /* print postfix expression */
-    // printf("%s\n", postfix);
+    for (int i=0; i<n; i++) {
+        // scanf("%s", infix);
+        strcpy(infix, equacoes[i]);
+        InfixToPostfix(infix,postfix);
+        printf("Postfix Expression: %s\n", postfix);
+        resolve(postfix);
+        
+    }
+	
 
 	return 0;
 }
