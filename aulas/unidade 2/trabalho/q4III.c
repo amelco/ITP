@@ -3,10 +3,11 @@
     infix to postifx:
     1. https://csis.pace.edu/~wolf/CS122/infix-postfix.htm
     2. https://www.geeksforgeeks.org/stack-set-2-infix-to-postfix/
+    3. http://community.bartdesmet.net/blogs/bart/archive/2006/10/11/4513.aspx
 
     evaluate postfix:
-    3. https://www.tutorialspoint.com/Evaluate-Postfix-Expression
-    4. https://www.geeksforgeeks.org/stack-set-4-evaluation-postfix-expression/
+    4. https://www.tutorialspoint.com/Evaluate-Postfix-Expression
+    5. https://www.geeksforgeeks.org/stack-set-4-evaluation-postfix-expression/
 
  > Recebe até 30 strings de 100 caracteres contendo equações que podem conter os operadores: 
      +, -, /, *
