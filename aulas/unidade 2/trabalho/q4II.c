@@ -17,21 +17,24 @@ bool tem_sinal(char equacoes[], char sinal) {
 // TODO: retorna string com a equação completa com o resultado da operação inserido
 // OBS: Apos opera(), deve-se percorrer a (nova) string novamente
 float opera (char numeros[2][100], char op, char equacao[100]) {
+    float res;
     if (op == '@') {
         printf("Erro buscando a operaçao\n");
-        return 0;
+        exit(0);
     } else if (op == '*') {
-        return (float)atoi(numeros[0]) * atoi(numeros[1]);
+        res = (float)atoi(numeros[0]) * atoi(numeros[1]);
+
     } else if (op == '/') {
-        return (float)atoi(numeros[0]) / atoi(numeros[1]);
+        res = (float)atoi(numeros[0]) / atoi(numeros[1]);
     } else if (op == '+') {
-        return (float)atoi(numeros[0]) + atoi(numeros[1]);
+        res = (float)atoi(numeros[0]) + atoi(numeros[1]);
     } else if (op == '-') {
-        return (float)atoi(numeros[0]) - atoi(numeros[1]);
+        res = (float)atoi(numeros[0]) - atoi(numeros[1]);
     } else {
-        printf("Operação não encontrada.\n");
-        return 0;
+        printf("Erro. Operação não encontrada.\n");
+        exit(0);
     }
+    return res;
 }
 
 int main() {
@@ -66,6 +69,7 @@ int main() {
                             // printf("%s %c %s\n", numeros[0], op, numeros[1]);
                             na++;
                             res = opera(numeros, op, equacoes[i]);
+                            // i=-1;
                             printf("%.2f\n", res);
                         } else {
                             numeros[na][ia-1] = '\0';
@@ -80,6 +84,7 @@ int main() {
                             // printf("%s %c %s\n", numeros[0], op, numeros[1]);
                             na++;
                             res = opera(numeros, op, equacoes[i]);
+                            // i=-1;
                             printf("%.2f\n", res);
                         } else {
                             ia = 0;
@@ -89,6 +94,7 @@ int main() {
                      if (i == strlen(equacoes[k])-1 && na == 1) {
                         //ultimo digito e segundo numero nao preenchido
                         res = opera(numeros, op, equacoes[i]);
+                        // i=-1;
                         na++;
                         printf("%.2f\n", res);
                      }
