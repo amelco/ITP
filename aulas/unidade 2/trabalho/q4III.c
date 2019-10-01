@@ -14,6 +14,8 @@
      e retorna o resultado da equação, levando em conta as prioridades do operadores.
  > Os operandos só podem ter um algarismo.
  > Considera parentêses para alterar prioridade de operações.
+ Parte 2:
+ > Pode-se ter mais de uma mesma variável numa equação. Ex. va+2-3*(va-vb)/7
  
  Disponível em: https://github.com/amelco/ITP/blob/master/aulas/unidade%202/trabalho/q4III.c
  Desenvolvido por: Andre Herman (amelco.herman@gmail.com)
@@ -131,7 +133,6 @@ void InfixToPostfix(char infix_exp[], char postfix_exp[])
         // se o item não é '(' ou ')' e nem um operador, então é um símbolo não permitido
 		else {
 			printf("\nExpressão infix inválida.\n");
-			getchar();
 			exit(1);
 		}
 
@@ -143,7 +144,6 @@ void InfixToPostfix(char infix_exp[], char postfix_exp[])
     // Ao fim do while loop, a pilha deve estar vazia
 	if(topo > 0) {
 		printf("\nExpressão infix inválida.\n");
-		getchar();
 		exit(1);
 	}
 
@@ -245,8 +245,11 @@ void var_to_infix(int nv, char vars[10][50], char eq[100], char infix[100]) {
 
     for (int i=0; i<nv; i++) {
         // verifica se as variaveis fazem parte da equaçao
-        pos[i] = substr(vars[iv], eq);
-        if (pos[i] >= 0) substituir(eq, pos[i], strlen(vars[iv]), vars[iv+1]);
+        // substitui a variavel por seu valor enquanto houver a variavel na equação
+        do {
+            pos[i] = substr(vars[iv], eq);
+            if (pos[i] >= 0) substituir(eq, pos[i], strlen(vars[iv]), vars[iv+1]);
+        } while (pos[i] >= 0);
         iv +=2;
     }
     strcpy(infix, eq);    
@@ -278,18 +281,18 @@ int main() {
     int nv = 2;
     char variaveis [10][50] = {"va","1",
                                "vb","2"};
-    int ne = 4;
+    int ne = 5;
     char equacoes2[30][100] = {"va+2*3",
                                "va-vb*3/4",
                                "1+1/vb",
-                               "2/3+3*4"};
+                               "2/3+3*4",
+                               "va+2-3*(va-vb)/7"};
     
     for (int i=0; i<ne; i++) {
         var_to_infix(2, variaveis, equacoes2[i], infix);
         InfixToPostfix(infix,postfix);
         printf("%20s = %7.2f\n", infix, resolve(postfix));
     }
-
 
 	return 0;
 }
