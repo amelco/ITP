@@ -197,28 +197,59 @@ float resolve(char postfix[]) {
 }
 
 /* inicio PARTE 2*/
-// função para encontrar uma substring dentro de outra string (em teste)
-int substr(char str[100], char sub[100]) {
+// função para encontrar uma substring dentro de outra string
+//   => retorna a posição de início da substring dentro da string
+int substr(char sub[100], char str[100]) {
     int i, j=0, k;
-      for(i=0; str[i]; i++) {
+    for(i=0; str[i]; i++) {
         if(str[i] == sub[j]) {
-            for(k=i, j=0; str[k] && sub[j]; j++, k++)
-                if(str[k]!=sub[j]) break;
-            if(!sub[j]) return i;
+            for(k=i, j=0; str[k] && sub[j]; j++, k++) {
+                if(str[k]!=sub[j]) {
+                    j=0;
+                    break;
+                }
+            }
+            if(!sub[j]) {
+                return i;
+            }
         }
-      }
+    }
+    return -1;
 }
 
-// função para substituir as variáveis por seus valores (em teste)
-void substituir(int nv, char vars[10][50], char eq[100]) {
+// função para substituir as variáveis por seus valores
+void substituir(char eq[100], int pos, int len, char repl[1]) {
     char new_eq[100];
-    char aux[100];
-    int ia = 0;
+    int in = 0;
+    int cont = 0;
     
-    for (int i=0; i<nv*2; i+=2) {
-        printf("%s %s => ", vars[i], eq);
-        printf("%d\n", substr(eq, vars[i]));
+    for (int i=0; i<strlen(eq); i++) {
+        if (i>=pos && cont<len) {
+            new_eq[in] = repl[0];
+            cont++;
+            if (i==pos) in++;
+        } else {
+            new_eq[in] = eq[i];
+            in++;
+        }
     }
+    new_eq[in] = '\0';
+    strcpy(eq, new_eq);
+}
+
+// define função para interpretar a string e substituíla pelas variaveis
+//   => retorna a expressão infix após substituição dos valores das variáveis
+void var_to_infix(int nv, char vars[10][50], char eq[100], char infix[100]) {
+    int pos[nv];
+    int iv = 0;
+
+    for (int i=0; i<nv; i++) {
+        // verifica se as variaveis fazem parte da equaçao
+        pos[i] = substr(vars[iv], eq);
+        if (pos[i] >= 0) substituir(eq, pos[i], strlen(vars[iv]), vars[iv+1]);
+        iv +=2;
+    }
+    strcpy(infix, eq);    
 }
 
 /* fim PARTE 2*/
@@ -234,14 +265,15 @@ int main() {
     // strings para serem usadas na função InfixToPostfix()
     char infix[100], postfix[100];
     
+    printf(".:: Parte 1 ::.\n");
     /* PARTE 1 e 3 */
     for (int i=0; i<n; i++) {
         strcpy(infix, equacoes[i]);
         InfixToPostfix(infix,postfix);
         printf("%20s = %7.2f\n", infix, resolve(postfix));
-        // printf("%s = %s = %.2f\n", infix, postfix, resolve(postfix));
     }
 
+    printf("\n.:: Parte 2 ::.\n");
     /* PARTE 2 (em teste) */
     int nv = 2;
     char variaveis [10][50] = {"va","1",
@@ -253,7 +285,9 @@ int main() {
                                "2/3+3*4"};
     
     for (int i=0; i<ne; i++) {
-        substituir(2, variaveis, equacoes2[i]);
+        var_to_infix(2, variaveis, equacoes2[i], infix);
+        InfixToPostfix(infix,postfix);
+        printf("%20s = %7.2f\n", infix, resolve(postfix));
     }
 
 
